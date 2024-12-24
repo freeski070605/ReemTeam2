@@ -1,0 +1,16 @@
+.deck {
+    border: 1px solid #000;
+    padding: 10px;
+    cursor: pointer;
+    background-color: lightgrey;
+}
+
+.deck-count {
+    margin-top: 10px;
+}
+
+.deck-cardback {
+    width: 80px; /* Adjust size as necessary */
+    height: 120px; /* Maintain aspect ratio */
+    cursor: pointer;
+}

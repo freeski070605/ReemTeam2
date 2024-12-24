@@ -1,0 +1,20 @@
+/* src/components/Card.css */
+.card {
+    width: 80px;
+    height: 120px;
+    border: 1px solid #1e1c1c;
+    border-radius: 5px;
+    background-color: #1a7adb;
+    text-align: center;
+    padding: 10px;
+    margin: 5px;
+    display: inline-block;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.card-image {
+    width: 100px; /* Adjust size as necessary */
+    height: auto;
+}
