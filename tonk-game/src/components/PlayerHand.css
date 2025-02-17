@@ -1,8 +1,14 @@
 /* PlayerHand.css */
 .player-hand-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+    overflow-x: auto;
+    padding: 5px;
+    gap: min(8px, 2vw);
+}
+
+.cards-wrapper {
+    display: flex;
+    gap: min(5px, 1.5vw);
 }
 
 .card {
@@ -29,4 +35,46 @@
     width: 80px; /* Adjust smaller size */
     height: auto; /* Maintain aspect ratio */
 }
+
+@media (max-width: 768px) {
+    .player-hand-container {
+      gap: 5px;
+    }
+    
+    .card img {
+      width: 70px;
+    }
+    
+    .spreads {
+      gap: 5px;
+    }
+    
+    .small {
+      width: 50px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .player-hand-container {
+        gap: 3px;
+    }
+    .card img {
+        width: 45px;
+    }
+    .spreads {
+        gap: 3px;
+    }
+    .small {
+        width: 35px;
+    }
+}
+
+@media screen and (min-width: 375px) and (max-width: 667px) {
+    .player-hand-container { gap: 2px; }
+    .card img { width: 40px; }
+    .spreads { gap: 2px; }
+    .small { width: 30px; }
+}
+
+  
 

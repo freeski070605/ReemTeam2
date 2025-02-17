@@ -3,14 +3,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Card.css'; // Import the CSS file
 
-const Card = ({ card }) => {
-    const { rank, suit } = card;
-    const cardImage = `${process.env.PUBLIC_URL}/assets/cards/${rank}_of_${suit}.png`; // Adjust the path as necessary
+const Card = ({ card, onClick, isSelected, isHidden, className }) => {
+    const cardImage = isHidden 
+        ? `${process.env.PUBLIC_URL}/assets/cards/back.png`
+        : `${process.env.PUBLIC_URL}/assets/cards/${card.rank}_of_${card.suit}.png`;
 
     return (
-        <img src={cardImage} alt={`${rank} of ${suit}`} className="card-image" />
+        <div 
+            className={`card ${isSelected ? 'selected' : ''} ${className || ''}`}
+            onClick={onClick}
+        >
+            <img 
+                src={cardImage} 
+                alt={isHidden ? 'Card Back' : `${card.rank} of ${card.suit}`}
+                className="card-image"
+            />
+        </div>
     );
 };
+
 
 Card.propTypes = {
     card: PropTypes.shape({

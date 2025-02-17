@@ -1,80 +1,70 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginPage from './LoginPage';
+import { UserContext } from './UserContext';
 import AuthService from './AuthService';
-import './Header.css';
+import './HomePage.css';
 
 const HomePage = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { user, setUser } = useContext(UserContext);
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [username, setUsername] = useState('');
-  const [chips, setChips] = useState();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   fetchUserData();
-  // }, []);
-
-  const fetchUserData = async () => {
+  const handleLogin = async (username, password) => {
     try {
-      const response = await AuthService.getCurrentUser();
-      console.log('User data:', response);
-
-      if (response && response.user) {
-        const user = response.user;
-        setIsLoggedIn(true);
-        setUsername(user.username);
-        setChips(user.chips);
+      const result = await AuthService.login(username, password);
+      if (result.success) {
+        setShowLoginModal(false);
+        navigate('/userprofile');
       } else {
-        navigate('/');
+        alert(result.error || 'Login failed. Please check your credentials.');
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Login error:', error);
+      alert('An error occurred during login. Please try again.');
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await AuthService.logout();
+      setUser(null); // Clear user data on logout
       navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
-  };
-
-  useEffect(() => {
-    fetchUserData();
-  }, [navigate]);
-
-  const handleLogin = async (username, password) => {
-    const result = await AuthService.login(username, password);
-    if (result.success) {
-      setIsLoggedIn(true);
-      setShowLoginModal(false);
-      navigate('/userprofile');
-    } else {
-      alert(result.error);
-    }
-  };
-
-  const handleLogout = () => {
-    AuthService.logout();
-    setIsLoggedIn(false);
-    navigate('/');
   };
 
   return (
     <div className="home-container">
       <main className="content">
-        <div className="container">
-          <section className="hero">
-            <h2>Welcome to Tonk Game!</h2>
-            {!isLoggedIn && (
-              <div>
-                <p>Log in or register to start playing.</p>
-                <button className="login-button" onClick={() => setShowLoginModal(true)}>Log In</button>
-              </div>
-            )}
-          </section>
-
-          {showLoginModal && (
-            <LoginPage handleLogin={handleLogin} onClose={() => setShowLoginModal(false)} />
+        <div className="hero-section">
+          <h2>Welcome to Reem Team!</h2>
+          <p>Join in on the fun and become part of the Reem Team. Explore exciting challenges and compete with players worldwide!</p>
+          {!user ? (
+            <div className="cta-buttons">
+              <button className="login-button" onClick={() => setShowLoginModal(true)}>Log In/Register</button>
+            </div>
+          ) : (
+            <div className="welcome-message">
+              <p>Welcome back, {user.username}! You have {user.chips} chips.</p>
+              <button className="logout-button" onClick={handleLogout}>Log Out</button>
+            </div>
           )}
         </div>
+
+        {showLoginModal && (
+          <LoginPage handleLogin={handleLogin} onClose={() => setShowLoginModal(false)} />
+        )}
       </main>
+      <footer className="footer">
+        <p>© 2023 Reem Team. All rights reserved.</p>
+        <div className="social-links">
+          <a href="https://facebook.com/reemteam" target="_blank" rel="noopener noreferrer">Facebook</a>
+          <a href="https://twitter.com/reemteam" target="_blank" rel="noopener noreferrer">Twitter</a>
+          <a href="https://instagram.com/reemteam" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+      </footer>
     </div>
   );
 };

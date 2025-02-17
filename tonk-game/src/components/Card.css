@@ -1,20 +1,24 @@
-/* src/components/Card.css */
 .card {
-    width: 80px;
-    height: 120px;
-    border: 1px solid #1e1c1c;
-    border-radius: 5px;
-    background-color: #1a7adb;
-    text-align: center;
-    padding: 10px;
-    margin: 5px;
-    display: inline-block;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    font-size: 16px;
-    font-weight: bold;
+    width: clamp(35px, 12vw, 70px);
+    height: auto;
+    margin: 1px;
 }
 
 .card-image {
-    width: 100px; /* Adjust size as necessary */
+    width: 100%;
     height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.card.selected {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+    .card {
+        width: clamp(50px, 8vw, 90px);
+        margin: 2px;
+    }
 }

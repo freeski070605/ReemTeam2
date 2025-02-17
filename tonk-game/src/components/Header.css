@@ -1,82 +1,179 @@
-/* HomePage.css */
+.header {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 
-/* Global Styles */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+}
+
+.logo-text {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffd700;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.logo-accent {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 2px;
+}
+
+.nav-section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+}
+
+.chip-balance {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffd700;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.username {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1.1rem;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.nav-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.nav-button.login {
+  background: #ffd700;
+  color: #1a1a1a;
+}
+
+.nav-button.logout {
+  background: #ff4444;
+  color: white;
+}
+
+.nav-button.admin {
+  background: #9c27b0;
+  color: white;
+}
+
+/* Add these new styles */
+.mobile-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.mobile-menu-toggle span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background-color: #ffd700;
+  transition: all 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+      display: flex;
   }
-  
-  .container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 20px;
+
+  .nav-section {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      padding: 1rem;
+      transform: translateY(-100%);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
   }
-  
-  /* Header Styles */
-  .navbar {
-    background-color: #54e15e;
-    color: #fff;
-    padding: 10px 0;
+
+  .nav-section.mobile-open {
+      transform: translateY(0);
+      opacity: 1;
+      visibility: visible;
   }
-  
-  .navbar .logo {
-    font-size: 24px;
-    margin: 0;
-    padding: 0;
-    line-height: 1;
-    cursor: pointer;
+
+  .user-section {
+      flex-direction: column;
+      width: 100%;
+      text-align: center;
   }
-  
-  .navbar nav {
-    float: right;
+
+  .nav-buttons {
+      flex-direction: column;
+      width: 100%;
   }
-  
-  .navbar nav button {
-    margin-left: 10px;
-    padding: 8px 16px;
-    background-color: #555;
-    border: none;
-    color: #fff;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 4px;
-    transition: background-color 0.3s ease;
+
+  .nav-button {
+      width: 100%;
+      margin: 5px 0;
   }
-  
-  .navbar nav button:hover {
-    background-color: #777;
+}
+
+@media (max-width: 480px) {
+  .logo-text, .logo-accent {
+      font-size: 1.3rem;
   }
-  
-  .user-info {
-    display: flex;
-    align-items: center;
+
+  .nav-section {
+      padding: 0.5rem;
   }
-  
-  .user-info p {
-    margin: 0;
-    font-size: 16px;
-    color: #040404;
+
+  .chip-balance {
+      font-size: 0.9rem;
   }
-  
-  /* Main Content Styles */
-  .content {
-    padding: 40px 0;
-  }
-  
-  .hero {
-    text-align: center;
-    margin-bottom: 40px;
-  }
-  
-  .hero h2 {
-    font-size: 36px;
-    margin-bottom: 10px;
-  }
-  
-  .hero p {
-    font-size: 18px;
-    color: #666;
-  }
-  
+}
+
+

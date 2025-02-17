@@ -1,15 +1,20 @@
-
-export const calculateStakeWinnings = (type, stake, playerCount) => {
-    switch(type) {
+export const calculateStakeWinnings = (winType, stake, playerCount, winners) => {
+    // Ensure stake is a number
+    const baseStake = Number(stake) || 0;
+    const totalPot = baseStake * (playerCount - 1);
+    
+    switch(winType) {
         case 'REEM':
-            return stake * 2 * (playerCount - 1);
+            return totalPot * 2;
         case 'DROP_WIN':
-            return stake * (playerCount - 1);
+            return totalPot;
         case 'DROP_CAUGHT':
-            return -stake * (playerCount - 1);
+            return totalPot * 2;  // Double stakes for caught drops
         case 'REGULAR_WIN':
-            return stake * (playerCount - 1);
+            return totalPot;
+        case 'STOCK_EMPTY':
+            return winners.length > 1 ? totalPot / winners.length : totalPot;
         default:
-            return 0;
+            return totalPot;
     }
 };

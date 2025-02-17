@@ -1,0 +1,169 @@
+.lobby-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    padding: 40px;
+    color: #ffffff;
+}
+
+.lobby-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.lobby-header h1 {
+    font-size: 3.5rem;
+    font-family: 'Playfair Display', serif;
+    color: #ffd700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    text-shadow: 0 2px 15px rgba(255, 215, 0, 0.3);
+}
+
+.stakes-selector {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+    padding: 20px;
+    background: rgba(255, 215, 0, 0.05);
+    border-radius: 15px;
+}
+
+.stake-button {
+    padding: 12px 25px;
+    border: 2px solid #ffd700;
+    background: rgba(26, 26, 26, 0.8);
+    color: #ffd700;
+    border-radius: 25px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.stake-button.selected {
+    background: #ffd700;
+    color: #1a1a1a;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+}
+
+.tables-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.table-card {
+    background: linear-gradient(145deg, #2d2d2d, #1a1a1a);
+    border-radius: 20px;
+    padding: 25px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    transition: all 0.4s ease;
+}
+
+.table-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.table-preview {
+    background: linear-gradient(to bottom right, #2d2d2d, #1a1a1a);
+    height: 180px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    position: relative;
+}
+
+.table-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 0;
+    border-top: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.stake-amount {
+    font-size: 1.8rem;
+    color: #ffd700;
+    font-weight: bold;
+    font-family: 'Playfair Display', serif;
+}
+
+.player-count {
+    background: rgba(255, 215, 0, 0.1);
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: #ffd700;
+    font-weight: 500;
+}
+
+.join-button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(to right, #ffd700, #ffed4a);
+    border: none;
+    border-radius: 25px;
+    color: #1a1a1a;
+    font-weight: bold;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.join-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.mini-player {
+    width: 45px;
+    height: 45px;
+    background: #ffd700;
+    border: 2px solid #1a1a1a;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .lobby-container {
+      padding: 20px;
+    }
+    
+    .lobby-header h1 {
+      font-size: 2.5rem;
+    }
+    
+    .stakes-selector {
+      flex-wrap: wrap;
+    }
+    
+    .tables-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    
+    .table-card {
+      padding: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .lobby-container {
+        padding: 10px;
+    }
+    .lobby-header h1 {
+        font-size: 2rem;
+    }
+    .tables-grid {
+        gap: 15px;
+    }
+    .table-card {
+        padding: 10px;
+    }
+}
+
+  

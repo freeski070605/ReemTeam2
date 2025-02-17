@@ -1,0 +1,52 @@
+.center-area {
+    grid-gap: 5px;
+    padding: 5px;
+}
+
+.deck, .discard-pile {
+    width: clamp(40px, 15vw, 80px);
+    aspect-ratio: 2.5/3.5;
+    position: relative;
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.8), rgba(45, 45, 45, 0.8));
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.game-info {
+    background: linear-gradient(145deg, rgba(26, 26, 26, 0.9), rgba(45, 45, 45, 0.9));
+    padding: clamp(8px, 2vw, 15px);
+    border-radius: 10px;
+    color: #ffd700;
+    font-size: clamp(14px, 3vw, 18px);
+    text-align: center;
+    width: 100%;
+    max-width: 200px;
+}
+
+.card-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ffd700;
+    color: #1a1a1a;
+    width: clamp(20px, 5vw, 25px);
+    height: clamp(20px, 5vw, 25px);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: clamp(10px, 2.5vw, 14px);
+}
+
+@media (min-width: 768px) {
+    .center-area {
+        grid-gap: 10px;
+        padding: 10px;
+    }
+    
+    .deck, .discard-pile {
+        width: clamp(50px, 20vw, 100px);
+    }
+}

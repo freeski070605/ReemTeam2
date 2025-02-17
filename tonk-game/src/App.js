@@ -1,4 +1,5 @@
 import React from 'react';
+import { GameProvider } from './components/GameContext';
 import { UserProvider } from './components/UserContext';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './components/Home';
@@ -12,6 +13,7 @@ import Header from './components/Header';
 const App = () => {
   return (
     <UserProvider>
+    <GameProvider>
       <Router>
         <Header />
         <Routes>
@@ -23,6 +25,7 @@ const App = () => {
           <Route path="/table/:tableId" element={<TableComponent />} />
         </Routes>
       </Router>
+    </GameProvider>
     </UserProvider>
   );
 };

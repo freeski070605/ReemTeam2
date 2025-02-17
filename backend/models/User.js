@@ -9,7 +9,19 @@ const userSchema = new mongoose.Schema({
     isAdmin: { type: Boolean, default: false },
     music: [{ type: String }],
     videos: [{ type: String }],
-    gameHistory: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Game' }],
+    stats: {
+      gamesPlayed: { type: Number, default: 0 },
+      wins: { type: Number, default: 0 },
+      reemWins: { type: Number, default: 0 },
+      totalEarnings: { type: Number, default: 0 }
+  },
+  gameHistory: [{
+    date: { type: Date, default: Date.now },
+    stake: { type: Number, default: 0 },
+    result: { type: String, default: 'pending' },
+    earnings: { type: Number, default: 0 },
+    opponents: [String]
+}]
 });
 
 userSchema.pre('save', async function (next) {

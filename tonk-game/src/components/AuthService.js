@@ -9,10 +9,14 @@ const AuthService = {
       const response = await axios.post(
         `${API_URL}/users/login`,
         { username, password },
-        { withCredentials: true } // Ensure cookies are sent
+        { withCredentials: true }
       );
-      if (response.data.success) {
-        return { success: true };
+      if (response.data.success && response.data.user) {
+        localStorage.setItem('token', response.data.token);
+        return {
+          success: true,
+          user: response.data.user
+        };
       } else {
         return { success: false, error: response.data.message };
       }
@@ -27,7 +31,6 @@ const AuthService = {
       await axios.post(`${API_URL}/users/logout`, {}, { withCredentials: true });
       console.log('Logout successful');
       redirect('/');
-
     } catch (error) {
       console.error('Logout error:', error);
       throw new Error('Failed to logout. Please try again.');
@@ -36,10 +39,10 @@ const AuthService = {
 
   register: async (username, email, password) => {
     try {
-      console.log('Registration request:', { username, email, password }); // Log the request data
+      console.log('Registration request:', { username, email, password });
 
       const response = await axios.post(`${API_URL}/users/register`, { username, email, password });
-      console.log('Registration response:', response.data); // Log the response data
+      console.log('Registration response:', response.data);
 
       if (response.data.success) {
         return { success: true, message: response.data.message };
@@ -64,11 +67,26 @@ const AuthService = {
       console.error('Get current user error:', error);
       return null;
     }
+  },
+
+  leaveTable: async (tableId, username) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/tables/leave`,
+        { tableId, username },
+        { withCredentials: true }
+      );
+      console.log('Leave table response:', response.data);
+      if (response.data.success) {
+        return { success: true };
+      } else {
+        return { success: false, error: response.data.message };
+      }
+    } catch (error) {
+      console.error('Leave table error:', error);
+      throw new Error('Failed to leave table. Please try again.');
+    }
   }
 };
-
- 
-
-
 
 export default AuthService;

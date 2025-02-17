@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const User = require('./models/User');
 const Game = require('./models/Game');
+const {Table, PRESET_TABLES} = require('./models/Table');
 const userRoutes = require('./routes/userRoutes');
 const gameRoutes = require('./routes/gameRoutes');
 const tableRoutes = require('./routes/tableRoutes'); // Ensure this is imported
@@ -59,18 +60,40 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Internal Server Error' });
 });
 
+// Initialize preset tables
+const initializePresetTables = async () => {
+  try {
+      await Table.deleteMany({}); // Clear existing tables
+      const tables = await Table.insertMany(PRESET_TABLES.map(table => ({
+          ...table,
+          players: [],
+          isActive: true
+      })));
+      console.log('Preset tables initialized');
+      return tables;
+  } catch (error) {
+      console.error('Error initializing preset tables:', error);
+  }
+};
+
+
 // Start the HTTP server
 const PORT = process.env.PORT || 3000;
 const server = app.listen(PORT, () => {
+  initializePresetTables();
   console.log(`Server is running on port ${PORT}`);
 });
 
 // Start the WebSocket server
 const io = require('socket.io')(server, {
   cors: {
-    origin: process.env.FRONTEND_ORIGIN,
-    methods: ["GET", "POST"]
-  }
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+    allowedHeaders: ["my-custom-header"]
+  },
+  transports: ['websocket', 'polling'],
+  pingTimeout: 60000
 });
 
 io.on('connection', (socket) => handleWebSocketConnection(socket, io));

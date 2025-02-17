@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const Table = require('../models/Table');
+const {Table} = require('../models/Table');
 const { authenticateToken, isAdmin } = require('../middleware/authMiddleware');
 
 // Create a new table
-router.post('/', async (req, res) => {
+router.post('/',  async (req, res) => {
   const { name, stake, player } = req.body;
 
   if (!name || !stake || !player || !player.username || typeof player.chips !== 'number') {
@@ -87,6 +87,17 @@ router.get('/:id', async (req, res) => {
     if (!table) {
       return res.status(404).json({ error: 'Table not found' });
     }
+    // Add human player if not present
+    const playerExists = table.players.some(p => p.username === req.user?.username);
+    if (req.user && !playerExists) {
+        table.players.push({
+            username: req.user.username,
+            chips: req.user.chips,
+            isHuman: true
+        });
+        await table.save();
+    }
+
     res.status(200).json({ table });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
@@ -97,7 +108,7 @@ router.get('/:id', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     // Fetch tables and filter out empty ones
-    const tables = await Table.find({ 'players.0': { $exists: true } });
+    const tables = await Table.find({});
     
     res.status(200).json({ success: true, tables });
   } catch (error) {

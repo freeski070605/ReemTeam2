@@ -4,7 +4,9 @@ import axios from 'axios';
 import Header from './Header';
 import { UserContext } from './UserContext';
 import { io } from 'socket.io-client';
-
+import './Lobby.css';
+import CreateTableModal from './createTableModal';
+import { socket } from '../hooks/useGameSocket';
 const stakesOptions = [1, 5, 10, 20, 50, 100];
 
 const Lobby = () => {
@@ -13,35 +15,73 @@ const Lobby = () => {
     const [gameStarted, setGameStarted] = useState(false);
     const [currentTableId, setCurrentTableId] = useState(null);
     const navigate = useNavigate();
-    const [socket, setSocket] = useState(null);
     const { user, isLoading } = useContext(UserContext);
+    const filteredTables = tables.filter(table => !stake || table.stake === stake);
+
+    const [showCreateModal, setShowCreateModal] = useState(false);
+
+    const createTable = async (tableData) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await axios.post('http://localhost:5000/tables', 
+                {
+                    ...tableData,
+                    player: user // Add the player data
+                },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            const newTable = response.data.table;
+            setTables([...tables, newTable]);
+            setShowCreateModal(false);
+        } catch (error) {
+            console.error('Error creating table:', error);
+        }
+    };
+    
+
 
     useEffect(() => {
         const fetchTables = async () => {
             try {
                 const response = await fetch('http://localhost:5000/tables');
                 const data = await response.json();
-                setTables(data.tables);
+                setTables(data.tables || []); // Add fallback empty array
             } catch (error) {
                 console.error('Error fetching tables:', error);
+                setTables([]); // Set empty array on error
             }
         };
+        
 
         fetchTables();
 
-        const newSocket = io('http://localhost:5000'); // Ensure this matches your server URL
-        setSocket(newSocket);
+        
 
-        newSocket.on('tables_update', (data) => {
+        socket.on('tables_update', (data) => {
             setTables(data.tables);
         });
 
         return () => {
-            if (newSocket) {
-                newSocket.close();
+            if (socket) {
+                socket.close();
             }
         };
     }, []);
+
+    useEffect(() => {
+        socket.on('table_joined', (data) => {
+            console.log('Table joined successfully:', data);
+            navigate(`/table/${data.tableId}`);
+        });
+    
+        return () => socket.off('table_joined');
+    }, [navigate]);
+    
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -63,25 +103,28 @@ const Lobby = () => {
         }
     };
 
-    const createTable = async () => {
-        try {
-            const tableName = `Table ${tables.length + 1}`; // Generate a name for the table
-            const response = await axios.post('http://localhost:5000/tables', { name: tableName, stake, player: user });
-            const newTable = response.data.table;
-            joinTable(newTable._id);
-        } catch (error) {
-            console.error('Error creating table:', error);
-        }
-    };
+    
 
     const joinTable = (tableId) => {
-        if (socket) {
-            socket.emit('join_table', { tableId, player: user });
-            setCurrentTableId(tableId);
-            setGameStarted(true);
-            navigate(`/table/${tableId}`);
-        }
+        if (!user) return;
+        
+        socket.emit('join_table', { 
+            tableId, 
+            player: {
+                username: user.username,
+                chips: user.chips,
+                isHuman: true
+            }
+        });
+        
+        setCurrentTableId(tableId);
+        setGameStarted(true);
+        navigate(`/table/${tableId}`);
     };
+    
+    
+    
+    
 
     const leaveTable = async () => {
         try {
@@ -107,42 +150,73 @@ const Lobby = () => {
     };
 
     return (
-        <div>
-            <h1>Lobby</h1>
-            <h2>Tables:</h2>
-            {!gameStarted && (
-                <div className="start-game">
-                    <label htmlFor="stake">Stake:</label>
-                    <select id="stake" value={stake || ''} onChange={(e) => handleStakeChange(Number(e.target.value))}>
-                        <option value="">Select Stake</option>
-                        {stakesOptions.map((option) => (
-                            <option key={option} value={option}>
-                                {option}
-                            </option>
-                        ))}
-                    </select>
-                    <button onClick={handleJoinOrCreateTable}>Join or Create Table</button>
+        <div className="lobby-container">
+            <div className="lobby-header">
+                <h1>Lobby</h1>
+            </div>
+            
+            <div className="stakes-selector">
+                <button 
+                    className={`stake-button ${!stake ? 'selected' : ''}`}
+                    onClick={() => handleStakeChange(null)}
+                >
+                    All Stakes
+                </button>
+                {stakesOptions.map((option) => (
+                    <button 
+                        key={option}
+                        className={`stake-button ${stake === option ? 'selected' : ''}`}
+                        onClick={() => handleStakeChange(option)}
+                    >
+                        ${option}
+                    </button>
+                ))}
+            </div>
+
+            {user?.isAdmin && (
+                <div className="admin-controls">
+                    <button 
+                        className="btn btn-primary"
+                        onClick={() => setShowCreateModal(true)}
+                        >
+                        Create New Table
+                    </button>
                 </div>
             )}
-            {gameStarted && (
-                <button onClick={leaveTable}>Leave Table</button>
-            )}
-            <div>
-                {(tables.length > 0) ? (
-                    tables.map((table) => (
+            {showCreateModal && (
+    <CreateTableModal
+        onClose={() => setShowCreateModal(false)}
+        onSubmit={createTable}
+    />
+)}
+    
+            <div className="tables-grid">
+                
+                {filteredTables.map((table) => (
+                    <div key={table._id} className="table-card">
+                        <div className="table-preview">
+                            {table.players.map((player, index) => (
+                                <div key={index} className={`mini-player ${['top', 'right', 'bottom', 'left'][index]}`}>
+                                    {player.username?.[0] || '?'}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="table-info">
+                            <span className="stake-amount">${table.stake}</span>
+                            <span className="player-count">{table.players?.length || 0}/4 Players</span>
+                        </div>
                         <div key={table._id}>
+                            
                             <span>{table.name} ({table.players?.length || 0}/4)</span>
-                            <button onClick={() => joinTable(table._id)} disabled={table.players?.length >= 4}>
+                            <button className="join-button" onClick={() => joinTable(table._id)} disabled={table.players?.length >= 4}>
                                 Join
                             </button>
-                            {user.isAdmin && (
+                            {user && user.isAdmin && (
                                 <button onClick={() => deleteTable(table._id)}>Delete</button>
                             )}
                         </div>
-                    ))
-                ) : (
-                    <p>No tables available</p>
-                )}
+                    </div>
+                ))}
             </div>
         </div>
     );
